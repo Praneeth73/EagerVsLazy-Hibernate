@@ -1,13 +1,15 @@
 package com.hibernate.EagervsLazy;
 
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
 import com.hibernate.model.Instructor;
 import com.hibernate.model.InstructorDetail;
 
-public class EagerLazyDemo {
+public class FetchJoinDemoo {
 
 	public static void main(String[] args) {
 		
@@ -24,21 +26,24 @@ public class EagerLazyDemo {
 		
 		//get a instructor from db 
 		int theId=1;
-		Instructor tempInstructor = session.get(Instructor.class, theId);
+		
+		Query<Instructor> query= session.createQuery("select i from Instructor i "
+											+"JOIN FETCH i.courses "
+											+"where i.id=:theInstuctorId",
+											Instructor.class);
+		
+		query.setParameter("theInstuctorId", theId);
+		
+		//excute the querey and get Instructor
+		//get single result will load the instructor and courses at all once because of the query mentioned above
+		Instructor tempInstructor = query.getSingleResult();
 		
 		System.out.println("Instructor ... -->" + tempInstructor);
-		
-		System.out.println("Courses for a instructor...--->"+ tempInstructor.getCourses());
 
+		//commit transaction;
 		session.getTransaction().commit();
 		
 		session.close();
-		
-		//To resolve the issue of lazy loading to retrieve data after session  is closed
-		
-		//option 1 --> we need to have have getter before session is closed
-		
-		
 
 		//get courses for the instructor
 		System.out.println("Courses for a instructor...--->"+ tempInstructor.getCourses());

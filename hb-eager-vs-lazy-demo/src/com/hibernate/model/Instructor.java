@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -40,7 +41,8 @@ public class Instructor {
 	
 	//one to many mapping instructor may have many courses
 	//Refers to instructor property in Course class
-	@OneToMany(mappedBy="instructor",cascade = {CascadeType.PERSIST,CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
+	@OneToMany(fetch=FetchType.LAZY,
+			mappedBy="instructor",cascade = {CascadeType.PERSIST,CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
 	private List<Course> courses;
 	
 	
